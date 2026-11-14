@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>FaZe Vault: watch, post, party up</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#fff;--ink:#0a0a0a;--mut:#5c5c5c;--line:#d9d9d9;--pan:#f1f1f1;--red:#e4002b;--onred:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#101010;--ink:#f4f4f4;--mut:#a6a6a6;--line:#2c2c2c;--pan:#1a1a1a;--red:#ff2d52;--onred:#101010;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#101010;--ink:#f4f4f4;--mut:#a6a6a6;--line:#2c2c2c;--pan:#1a1a1a;--red:#ff2d52;--onred:#101010;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.5 "Source Sans 3",system-ui,-apple-system,"Segoe UI",sans-serif}
+.wrap{max-width:980px;margin:0 auto;padding:0 20px 48px}
+h1,h2{font-family:Anton,Impact,"Arial Narrow",sans-serif;font-weight:400;text-transform:uppercase;line-height:1.02;margin:0}
+header{display:flex;flex-wrap:wrap;gap:10px 20px;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:4px solid var(--ink)}
+.logo{font-family:Anton,Impact,sans-serif;font-size:26px;text-transform:uppercase}
+.logo b{color:var(--red);font-weight:400}
+.links{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border:1.5px solid var(--ink);border-radius:999px;font-weight:600;font-size:13px}
+.chip.off{border-style:dashed;border-color:var(--line);color:var(--mut)}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red)}
+.off .dot{background:var(--line)}
+.fp{background:var(--red);color:var(--onred);border-color:var(--red);font-size:15px}
+.hero{padding:28px 0 6px}
+.hero h1{font-size:clamp(40px,8vw,76px)}
+.hero h1 span{color:var(--red)}
+.tabs{display:flex;gap:4px;margin:18px 0 22px;border-bottom:1px solid var(--line);overflow-x:auto}
+.tabs button{font:700 16px "Source Sans 3",sans-serif;padding:10px 16px;border:0;border-bottom:4px solid transparent;background:none;color:var(--mut);cursor:pointer;white-space:nowrap}
+.tabs button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--red)}
+:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.cols.live{grid-template-columns:1.5fr 1fr}
+@media (max-width:780px){.cols,.cols.live{grid-template-columns:1fr}}
+h2{font-size:28px;margin-bottom:4px}
+.sub{color:var(--mut);margin:0 0 14px;font-size:15px}
+.card{display:flex;gap:12px;align-items:center;padding:12px 0;border-top:1px solid var(--line)}
+.av{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font:700 15px "Source Sans 3",sans-serif;color:#fff}
+.grow{flex:1;min-width:0}
+.name{font-weight:700}
+.why{font-size:14px;color:var(--mut)}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:1px 7px;border-radius:4px;background:var(--pan);margin-right:6px}
+.btn{font:700 14px "Source Sans 3",sans-serif;padding:8px 14px;border-radius:6px;border:2px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer;white-space:nowrap;text-decoration:none;display:inline-block}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--onred)}
+.btn[disabled],.btn[aria-disabled="true"]{opacity:.45;cursor:not-allowed}
+.spots{font-size:13px;font-weight:700;color:var(--red)}
+.eras{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:18px}
+.eras button{font:600 14px "Source Sans 3",sans-serif;padding:6px 12px;border-radius:999px;border:1.5px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.eras button[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--onred)}
+.form{background:var(--pan);padding:14px;border-radius:8px;margin-top:20px;display:grid;gap:10px;grid-template-columns:1fr 1fr 80px}
+.form label{display:grid;gap:3px;font-size:13px;font-weight:600}
+select,textarea{font:inherit;padding:8px;border-radius:6px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.form .btn{grid-column:1/-1}
+.safe{margin-top:18px;font-size:13px;color:var(--mut);border-left:4px solid var(--red);padding-left:10px}
+.screen{position:relative;aspect-ratio:16/9;background:#111;border-radius:8px;overflow:hidden;color:#fff;display:grid;place-items:center}
+.screen::before{content:"";position:absolute;inset:0;background:linear-gradient(115deg,transparent 55%,#e4002b 55%,#e4002b 62%,transparent 62%)}
+.badge{position:absolute;top:10px;left:10px;background:#e4002b;font-weight:700;font-size:13px;padding:2px 8px;border-radius:4px;z-index:1}
+.view{position:absolute;top:10px;right:10px;font-size:13px;z-index:1}
+.score{position:relative;z-index:1;text-align:center;font-family:Anton,Impact,sans-serif;font-size:clamp(34px,7vw,64px);line-height:1}
+.score small{display:block;font:600 14px "Source Sans 3",sans-serif;margin-top:8px;opacity:.85}
+.bar{height:8px;background:var(--pan);border-radius:4px;overflow:hidden;margin:6px 0 2px}
+.bar i{display:block;height:100%;background:var(--red);width:0;transition:width .4s}
+ul.upd{list-style:none;margin:0;padding:0}
+ul.upd li{padding:9px 0;border-top:1px solid var(--line);font-size:15px}
+ul.upd b{color:var(--red);margin-right:6px}
+.pred{background:var(--pan);border-radius:8px;padding:14px;margin-top:16px}
+.pred .row{margin-top:10px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row select{width:auto}
+.post{padding:14px 0;border-top:1px solid var(--line);display:flex;gap:12px}
+.like{background:none;border:0;font:600 14px "Source Sans 3",sans-serif;color:var(--mut);cursor:pointer;padding:4px 0}
+.like[aria-pressed="true"]{color:var(--red)}
+.perk .cost{font-weight:700;color:var(--red);white-space:nowrap}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;font-weight:600;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:20;max-width:90%}
+#toast.on{opacity:1}
+dialog{border:3px solid var(--ink);border-radius:10px;padding:22px;max-width:460px;width:calc(100% - 32px);background:var(--bg);color:var(--ink)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+.slots{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}
+.slot{width:64px;text-align:center;font-size:12px;font-weight:600}
+.slot .av{margin:0 auto 4px;width:48px;height:48px}
+.slot .empty{background:none;border:2px dashed var(--line);color:var(--mut)}
+.status{font-weight:700;margin:6px 0 14px;min-height:24px}
+.note{font-size:12px;color:var(--mut);margin-top:12px}
+footer{margin-top:36px;padding-top:14px;border-top:1px solid var(--line);font-size:13px;color:var(--mut)}
+.form{grid-template-columns:1fr 1fr}
+.in,.pf input{font:inherit;padding:8px;border-radius:6px;border:1.5px solid var(--line);background:var(--bg);color:var(--ink);width:100%}
+.pf{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pf label{display:grid;gap:3px;font-size:13px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0 12px}
+.cb{font:600 14px "Source Sans 3",sans-serif;padding:5px 11px;border-radius:999px;border:1.5px solid var(--ink);background:var(--bg);color:var(--ink);cursor:pointer}
+.cb[aria-pressed="true"]{background:var(--red);border-color:var(--red);color:var(--onred)}
+.sw{width:30px;height:30px;border-radius:50%;border:2px solid var(--bg);outline:2px solid var(--line);cursor:pointer}
+.sw[aria-pressed="true"]{outline:3px solid var(--ink)}
+.chk{display:flex;gap:8px;align-items:center;font-size:14px;margin-top:6px}
+.pcard{border:3px solid var(--ink);border-radius:10px;overflow:hidden}
+.ban{height:86px}
+.pb{padding:0 16px 16px}
+.av.big{width:68px;height:68px;font-size:22px;margin-top:-34px;border:4px solid var(--bg)}
+.mc{border:4px solid;border-radius:10px;padding:14px;margin:12px 0;background:var(--pan)}
+.mc .mt{font-family:Anton,Impact,sans-serif;text-transform:uppercase;font-size:24px;line-height:1.1;margin:4px 0 6px}
+@media (max-width:780px){.pf{grid-template-columns:1fr}}
+.era-sel{display:flex;gap:10px;align-items:center;font-weight:600;margin-bottom:30px;flex-wrap:wrap}
+.era-sel select{width:auto}
+#p-party .cols{gap:64px}
+#p-party .card{padding:20px 0}
+#p-party .safe{border:0;padding:0;margin-top:26px}
+details.start{margin-top:28px}
+details.start summary{list-style:none;display:inline-block}
+details.start summary::-webkit-details-marker{display:none}
+.games{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}
+.gc{border:2px solid var(--ink);border-radius:10px;padding:14px}
+.gc h3{font:400 22px Anton,Impact,sans-serif;text-transform:uppercase;margin:0 0 4px}
+.felt{background:#0b6b3a;border-radius:14px;padding:18px;display:grid;gap:12px;justify-items:center;color:#fff;margin-top:12px}
+.felt .why{color:#fff}
+.pc{display:inline-block;min-width:40px;padding:8px 6px;margin:0 3px;border-radius:6px;background:#fff;color:#111;font-weight:700;text-align:center}
+.pc.r{color:#c4001f}
+.pc.back{background:repeating-linear-gradient(45deg,#e4002b 0 6px,#8f001a 6px 12px);color:transparent}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="logo">FaZe <b>Vault</b></div>
+  <div class="links">
+    <span class="chip"><span class="dot"></span>Steam</span>
+    <span class="chip"><span class="dot"></span>Riot</span>
+    <span class="chip off"><span class="dot"></span>Epic soon</span>
+    <span class="chip"><span class="dot"></span>Discord</span>
+    <span class="chip fp" aria-live="off"><span id="fp">120</span> FaZe Points</span>
+  </div>
+</header>
+<section class="hero"><h1>Watch. Post. <span>Party up.</span></h1></section>
+<div class="tabs" role="tablist" id="tabs">
+  <button role="tab" data-t="live" aria-selected="true">Live</button>
+  <button role="tab" data-t="feed" aria-selected="false">Feed</button>
+  <button role="tab" data-t="party" aria-selected="false">Party up</button>
+  <button role="tab" data-t="create" aria-selected="false">Create</button>
+  <button role="tab" data-t="profile" aria-selected="false">Profile</button>
+  <button role="tab" data-t="arcade" aria-selected="false">Arcade</button>
+  <button role="tab" data-t="perks" aria-selected="false">Rewards</button>
+</div>
+
+<main>
+<div id="p-live" class="cols live">
+  <section>
+    <div class="screen" aria-label="Demo match stream">
+      <span class="badge">LIVE</span><span class="view"><span id="vw">8,412</span> watching</span>
+      <div class="score"><span id="sa">0</span> : <span id="sb">0</span><small id="mi">FaZe vs Team Nova · Demo match</small></div>
+    </div>
+    <p class="sub" style="margin-top:8px">Watch time earns 2 FaZe Points every few seconds (sped up for the demo).</p>
+    <div class="bar" aria-hidden="true"><i id="wb"></i></div>
+    <div class="why"><span id="wn">0</span> of 40 watch points earned this session</div>
+    <div class="pred" aria-labelledby="qh">
+      <h2 id="qh" style="font-size:22px">Call the next round</h2>
+      <div id="q"></div>
+    </div>
+  </section>
+  <section>
+    <h2>Match updates</h2>
+    <p class="sub">Pushed live as rounds finish.</p>
+    <ul class="upd" id="upd" aria-live="polite"></ul>
+  </section>
+</div>
+
+<div id="p-feed" hidden style="max-width:640px">
+  <h2>Fan feed</h2>
+  <p class="sub">Post about the match or your favorite FaZe moment. Your first 3 posts earn 3 points each.</p>
+  <textarea id="pt" rows="3" maxlength="240" placeholder="What’s your take on that last round?"></textarea>
+  <div class="row" style="margin:8px 0 12px"><button class="btn red" id="pb" type="button">Post</button><span class="why" id="pc">240 left</span></div>
+  <div id="posts"></div>
+</div>
+
+<div id="p-party" hidden>
+  <label class="era-sel">Showing <select id="eras" aria-label="Filter by era"></select><button class="btn" id="more" type="button">Show all</button></label>
+  <div class="cols">
+    <section>
+      <h2>People you’ve run with</h2>
+      <p class="sub">Only players who linked an account and turned on “Find me.”</p>
+      <div id="people"></div>
+      <p class="safe">13+ only. No private DMs. Players under 18 only see other under-18s. Matching uses shared games and matches played, never location.</p>
+    </section>
+    <section>
+      <h2>Party board</h2>
+      <p class="sub">A full party earns 10 points and a Discord voice room.</p>
+      <div id="board"></div>
+      <details class="start"><summary class="btn red">Start a party</summary><form class="form" id="form" aria-label="Start a party">
+        <label>Game<select id="fg"><option>Valorant</option><option>League of Legends</option><option>CS2</option><option>Rocket League</option><option>Apex Legends</option><option>Call of Duty</option><option>Halo</option><option>Rainbow Six Siege</option><option>Fortnite</option><option>Overwatch 2</option><option>Minecraft</option></select></label>
+        <label>When<select id="fw"><option>Tonight 8:00 pm</option><option>Tonight 10:00 pm</option><option>Friday 8:00 pm</option><option>Saturday 7:00 pm</option><option>Saturday 9:00 pm</option><option>Sunday 6:00 pm</option></select></label>
+        <label>Size<select id="fs"><option>2</option><option>3</option><option>4</option><option selected>5</option><option>6</option></select></label>
+        <label>Era<select id="fe"></select></label>
+        <button class="btn red" type="submit">Start a party</button>
+      </form></details>
+    </section>
+  </div>
+</div>
+
+<div id="p-create" hidden>
+  <div class="cols">
+    <section>
+      <h2>Dream roster</h2>
+      <p class="sub">Pick 5. The pool has real FaZe names plus demo placeholders.</p>
+      <div class="chips" id="rpool"></div>
+      <div class="row"><input class="in" id="rn" maxlength="24" placeholder="Name your roster" aria-label="Roster name" style="flex:1"><button class="btn red" id="rs" type="button">Save and post</button></div>
+      <p class="why" id="rl"></p>
+    </section>
+    <section>
+      <h2>Moment card</h2>
+      <p class="sub">Pick a moment from FaZe history and add your memory.</p>
+      <div class="row"><select id="mm" aria-label="Moment" style="flex:1"></select><select id="mf" aria-label="Frame"><option value="#e4002b">Red frame</option><option value="#0a0a0a">Black frame</option><option value="#c9a227">Gold frame</option></select></div>
+      <input class="in" id="mc" maxlength="100" placeholder="Where were you when this happened?" aria-label="Your memory" style="margin-top:8px">
+      <div id="mcard"></div>
+      <button class="btn red" id="mp" type="button">Post to feed</button>
+    </section>
+  </div>
+</div>
+
+<div id="p-profile" hidden>
+  <div class="cols">
+    <section>
+      <h2>Your profile</h2>
+      <p class="sub">Customize it. The card updates as you go.</p>
+      <div class="pf">
+        <label>Display name<input id="pn" maxlength="20"></label>
+        <label>Bio<input id="pb2" maxlength="80"></label>
+        <label>Title<select id="pti"><option>OG fan</option><option>Rookie</option><option>Clutch caller</option><option>Lore keeper</option><option>Squad leader</option><option>Trickshot kid</option></select></label>
+        <label>Home era<select id="pe"></select></label>
+        <label>Avatar shape<select id="ps"><option value="50%">Circle</option><option value="12px">Rounded</option><option value="0">Square</option></select></label>
+        <label>Banner<select id="pp"><option value="stripes">Stripes</option><option value="dots">Dots</option><option value="grid">Grid</option><option value="plain">Plain</option></select></label>
+        <label>Page theme<select id="pth"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      </div>
+      <p class="why" style="margin-top:14px">Accent color</p><div class="chips" id="pc"></div>
+      <p class="why">Favorite games</p><div class="chips" id="pg"></div>
+      <p class="why">Favorite players (up to 3)</p><div class="chips" id="pf"></div>
+      <label class="chk"><input type="checkbox" id="pfind" checked> Let others find me for parties</label>
+      <label class="chk"><input type="checkbox" id="pfp" checked> Show my FaZe Points</label>
+    </section>
+    <section><div class="pcard" id="pcard"></div></section>
+  </div>
+</div>
+
+<div id="p-arcade" hidden style="max-width:760px">
+  <h2>Arcade</h2>
+  <p class="sub">Play-money chips only. No cash in, no cash out, and chips can’t be traded for FaZe Points or prizes.</p>
+  <label class="chk"><input type="checkbox" id="age"> I’m 18 or older</label>
+  <div id="arc" hidden style="margin-top:18px">
+    <div class="row" style="margin-bottom:18px"><span class="chip fp"><span id="ch">500</span> chips</span><button class="btn" id="refill" type="button">Demo refill</button><label class="why">Bet <select id="abet" style="width:auto"><option>10</option><option>25</option><option>50</option><option>100</option></select></label></div>
+    <div class="games">
+      <div class="gc" id="g-coin"><h3>Coin flip</h3><p class="why">Pays 2×. Chase a streak.</p><div class="row"><button class="btn" data-c="h" type="button">Heads</button><button class="btn" data-c="t" type="button">Tails</button></div><p class="why" id="r-coin" aria-live="polite"></p></div>
+      <div class="gc" id="g-dice"><h3>Dice</h3><p class="why">Under or over 7 pays 2×. Exactly 7 pays 5×.</p><div class="row"><button class="btn" data-d="u" type="button">Under</button><button class="btn" data-d="s" type="button">Lucky 7</button><button class="btn" data-d="o" type="button">Over</button></div><p class="why" id="r-dice" aria-live="polite"></p></div>
+      <div class="gc" id="g-spin"><h3>Lucky spin</h3><p class="why">Top prize 8×.</p><button class="btn red" data-s="1" type="button">Spin</button><p class="why" id="r-spin" aria-live="polite"></p></div>
+    </div>
+    <h2 style="margin-top:36px">Poker</h2>
+    <p class="sub">Heads-up Texas hold’em against a bot. Buy-in is 50 big blinds.</p>
+    <div class="row" id="pk-lobby"><select id="pkb" aria-label="Blinds" style="width:auto"><option value="2">Blinds 1 / 2 · buy-in 100</option><option value="5">Blinds 2.5 / 5 · buy-in 250</option></select><button class="btn red" id="pksit" type="button">Sit down</button></div>
+    <div id="pk" hidden></div>
+  </div>
+</div>
+
+<div id="p-perks" hidden style="max-width:640px">
+  <h2>Rewards</h2>
+  <p class="sub">FaZe Points can’t be bought or cashed out. Experiences are raffle entries, so everyone has a fair shot.</p>
+  <p class="why" style="margin-bottom:14px">Ways to earn: watch live (up to 40), post (3 each, first 3), fill a party (10), save a dream roster (5), make moment cards (3 each, first 3), pick 3 favorite players (5), and 1 each time a favorite opens a round.</p><div id="perks"></div>
+</div>
+</main>
+
+<footer>Prototype with demo data. The match, players, posts and prizes are made up. The real version would embed FaZe’s Twitch stream and use Twitch EventSub for live updates. Predictions use earned points only. The Arcade uses separate play-money chips that can’t be exchanged for points or prizes. No money in or out.</footer>
+</div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<dialog id="room" aria-labelledby="rt">
+  <h2 id="rt"></h2>
+  <div class="why" id="rw"></div>
+  <div class="slots" id="slots"></div>
+  <div class="status" id="st" role="status" aria-live="polite"></div>
+  <div class="row">
+    <a class="btn red" id="dc" href="https://discord.com" target="_blank" rel="noopener" aria-disabled="true">Open Discord voice room</a>
+    <button class="btn" id="leave" type="button">Leave</button>
+    <button class="btn" id="close" type="button">Close</button>
+  </div>
+  <div class="note">The voice room unlocks when the party is full.</div>
+</dialog>
+
+<script>
+var $=function(s){return document.querySelector(s)};
+var fp=120,watch=0,tab="live",era="all",cur=null,timer=null,posts3=0,mk=0,fh=0,me={name:"You",bio:"Here since the trickshot days.",title:"OG fan",era:"2012",accent:"#e4002b",shape:"50%",pat:"stripes",games:["Valorant"],fav:[],find:true,showfp:true,rname:"",rlist:null};
+var COLORS=["#e4002b","#222","#6b6b6b","#9b0020","#444"];
+function esc(s){var d=document.createElement("div");d.textContent=s;return d.innerHTML}
+function color(n){var h=0;for(var i=0;i<n.length;i++)h+=n.charCodeAt(i);return COLORS[h%COLORS.length]}
+function av(n){var m=n==="You"||n===me.name;return '<div class="av" style="background:'+(m?me.accent+';border-radius:'+me.shape:color(n))+'" aria-hidden="true">'+esc(n.slice(0,2).toUpperCase())+'</div>'}
+var tt;function toast(m){var t=$("#toast");t.textContent=m;t.classList.add("on");clearTimeout(tt);tt=setTimeout(function(){t.classList.remove("on")},2600)}
+function add(n,m){fp+=n;$("#fp").textContent=fp;toast((n>0?"+":"\u2212")+Math.abs(n)+" FaZe Points \u00b7 "+m);renderPerks();paintP()}
+
+/* tabs */
+$("#tabs").addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;tab=b.dataset.t;
+  [].forEach.call(document.querySelectorAll("#tabs button"),function(x){x.setAttribute("aria-selected",x===b)});
+  ["live","feed","party","create","profile","arcade","perks"].forEach(function(k){$("#p-"+k).hidden=k!==tab})});
+
+/* live match */
+var fa=0,fb=0,rd=0,pct=55,bet=null,vw=8412,STAR=["Ace","Rift","Kno","Zed"];
+function renderQ(){
+  var h='<p style="margin:6px 0 0;font-weight:600">Will FaZe win round '+(rd+1)+'?</p>';
+  if(bet){h+='<p class="why">Locked in: <b>'+bet.side.toUpperCase()+'</b> for '+bet.stake+' points. Pays '+bet.pay+' if you’re right.</p>'}
+  else{h+='<div class="row"><select id="stake" aria-label="Points to stake"><option>5</option><option>10</option><option>25</option><option>50</option><option>100</option></select><button class="btn" type="button" data-b="yes">Yes \u00b7 '+pct+'%</button><button class="btn" type="button" data-b="no">No \u00b7 '+(100-pct)+'%</button></div>'}
+  $("#q").innerHTML=h+'<p class="why" id="bl"></p>';
+}
+$("#q").addEventListener("click",function(e){var b=e.target.closest("[data-b]");if(!b)return;
+  var s=+$("#stake").value;if(s>fp){toast("Not enough FaZe Points");return}
+  var side=b.dataset.b,p=side==="yes"?pct:100-pct;
+  bet={side:side,stake:s,pay:Math.round(s*100/p)};add(-s,"locked in");renderQ()});
+function push(t){var li=document.createElement("li");li.innerHTML='<b>Rd '+rd+'</b>'+esc(t);var u=$("#upd");u.insertBefore(li,u.firstChild);while(u.children.length>8)u.removeChild(u.lastChild)}
+function tick(){
+  if(fa>=13||fb>=13){fa=fb=rd=0;push("New map starting");$("#sa").textContent=0;$("#sb").textContent=0;renderQ();return}
+  rd++;var win=Math.random()<0.55,p=STAR[Math.floor(Math.random()*4)];
+  if(win)fa++;else fb++;
+  push(win?"FaZe takes the round. "+p+" opens with a pick.":"Team Nova takes it. FaZe saves.");if(win&&me.fav.indexOf(p)>-1&&fh<10){fh++;add(1,"your favorite "+p+" opened the round")}
+  $("#sa").textContent=fa;$("#sb").textContent=fb;
+  vw+=Math.floor(Math.random()*90)-30;$("#vw").textContent=vw.toLocaleString();
+  if(bet){var ok=(bet.side==="yes")===win;if(ok)add(bet.pay,"prediction hit");else toast("Missed it. Better luck next round");bet=null}
+  pct=45+Math.floor(Math.random()*20);renderQ();
+}
+setInterval(tick,6000);
+setInterval(function(){if(tab==="live"&&!document.hidden&&watch<40){watch+=2;$("#wn").textContent=watch;$("#wb").style.width=(watch/40*100)+"%";add(2,"watching live")}},5000);
+
+/* feed */
+var POSTS=[{n:"Dreadwave",t:"Still can’t believe the 2012 celebration montage has 12M views. Peak trickshot era.",l:41},{n:"kaz_nine",t:"That last clutch had me out of my seat. FaZe never fold.",l:18},{n:"bigmoodTV",t:"New here. Which video should I watch first to get the lore?",l:9}];
+function renderPosts(){$("#posts").innerHTML=POSTS.map(function(p,i){return '<div class="post">'+av(p.n)+'<div class="grow"><div class="name">'+esc(p.n)+'</div><div>'+esc(p.t)+'</div><button class="like" type="button" data-l="'+i+'" aria-pressed="'+!!p.on+'">'+(p.on?"Liked":"Like")+' \u00b7 '+p.l+'</button></div></div>'}).join("")}
+$("#posts").addEventListener("click",function(e){var b=e.target.closest("[data-l]");if(!b)return;var p=POSTS[b.dataset.l];p.on=!p.on;p.l+=p.on?1:-1;renderPosts()});
+$("#pt").addEventListener("input",function(){$("#pc").textContent=(240-this.value.length)+" left"});
+$("#pb").addEventListener("click",function(){var v=$("#pt").value.trim();if(!v){toast("Write something first");return}
+  POSTS.unshift({n:me.name,t:v,l:0});$("#pt").value="";$("#pc").textContent="240 left";renderPosts();
+  if(posts3<3){posts3++;add(3,"posted to the feed")}});
+
+/* rewards */
+var PERKS=[{id:1,n:"Play a match with a FaZe creator",k:"Raffle entry",c:500},{id:2,n:"Meet and greet at a FaZe event",k:"Raffle entry",c:300},{id:3,n:"Your name read out on stream",k:"Perk",c:150},{id:4,n:"Early access to the next merch drop",k:"Perk",c:200},{id:5,n:"Era badge for your profile",k:"Perk",c:50},
+ {id:6,n:"Custom emote in the FaZe Discord",k:"Raffle entry",c:250},{id:7,n:"Vote on the next archive remake",k:"Perk",c:100},
+ {id:8,n:"Signed jersey",k:"Raffle entry",c:800},{id:9,n:"Merch discount code",k:"Perk",c:120},
+ {id:10,n:"Watch a premiere with the crew",k:"Raffle entry",c:400},{id:11,n:"Animated profile border",k:"Perk",c:75}];
+function renderPerks(){$("#perks").innerHTML=PERKS.map(function(p){var dis=p.got||p.c>fp;
+  return '<div class="card perk"><div class="grow"><div class="name">'+p.n+'</div><div class="why"><span class="tag">'+p.k+'</span></div></div><span class="cost">'+p.c+' pts</span><button class="btn red" type="button" data-p="'+p.id+'"'+(dis?" disabled":"")+'>'+(p.got?"Entered":"Redeem")+'</button></div>'}).join("")}
+$("#perks").addEventListener("click",function(e){var b=e.target.closest("[data-p]");if(!b)return;
+  var p=PERKS.filter(function(x){return String(x.id)===b.dataset.p})[0];if(p.c>fp)return;p.got=true;add(-p.c,p.k==="Perk"?"unlocked":"raffle entry sent")});
+
+/* party up */
+var ERAS=[["all","All eras"],["2010","2010 Origins"],["2012","2012 Million subs"],["2013","2013 Rug joins"],["2019","2019 Social boom"],["2020","2020 Nuke Squad"],["2021","2021 SI cover"],["2022","2022 Snoop era"],["2024","2024 Streamer awards"],["2026","2026 HardScope"]];
+var PEOPLE=[
+ {n:"kaz_nine",era:"2020",g:["Valorant"],why:"Played 7 matches with you on Riot",src:"Riot"},
+ {n:"Dreadwave",era:"2012",g:["CS2"],why:"Steam friend, also on FaZe Vault",src:"Steam"},
+ {n:"nova.exe",era:"2012",g:["League of Legends"],why:"Played 3 matches with you on Riot",src:"Riot"},
+ {n:"Rooftop_Rey",era:"2020",g:["Rocket League"],why:"You both own Rocket League, same time zone",src:"Steam"},
+ {n:"bigmoodTV",era:"2022",g:["Valorant"],why:"Same era lobby, both play Valorant",src:"Era"},
+ {n:"clipgoblin",era:"2010",g:["Call of Duty"],why:"Also stamped “I was there” on the 2010 trickshots",src:"Era"},
+ {n:"Mara_Vox",era:"2013",g:["Fortnite"],why:"Steam friend, same era lobby",src:"Steam"},
+ {n:"hexed_hal",era:"2019",g:["Apex Legends"],why:"You both own Apex, same time zone",src:"Steam"},
+ {n:"quietstorm",era:"2021",g:["Rainbow Six Siege"],why:"Same era lobby, both play Rainbow Six",src:"Era"},
+ {n:"orbit_ink",era:"2024",g:["Halo"],why:"Same era lobby, both play Halo",src:"Era"},
+ {n:"zeroday",era:"2026",g:["Valorant"],why:"Played 5 matches with you on Riot",src:"Riot"}];
+var PARTIES=[
+ {id:1,game:"Valorant",when:"Tonight 8:00 pm",size:5,era:"2020",members:["kaz_nine","nova.exe"]},
+ {id:2,game:"Rocket League",when:"Tonight 10:00 pm",size:3,era:"2012",members:["Rooftop_Rey"]},
+ {id:3,game:"CS2",when:"Saturday 7:00 pm",size:5,era:"2022",members:["Dreadwave","bigmoodTV","nova.exe"]},
+ {id:4,game:"Call of Duty",when:"Tonight 9:00 pm",size:4,era:"2010",members:["clipgoblin"]},
+ {id:5,game:"Halo",when:"Sunday 6:00 pm",size:4,era:"2024",members:["orbit_ink","zeroday"]},
+ {id:6,game:"Apex Legends",when:"Saturday 9:00 pm",size:3,era:"2019",members:["hexed_hal"]},
+ {id:7,game:"Rainbow Six Siege",when:"Friday 8:00 pm",size:5,era:"2021",members:["quietstorm"]}];
+var FILL=["Vex_Ana","trickshotTom","mellowK","Jules_OG","sixtyfour"];
+function eraName(e){for(var i=0;i<ERAS.length;i++)if(ERAS[i][0]===e)return ERAS[i][1];return e}
+function renderEras(){$("#eras").innerHTML=opts(ERAS);$("#eras").value=era}
+$("#eras").addEventListener("change",function(){era=this.value;renderPeople();renderBoard()});
+function renderPeople(){var l=PEOPLE.filter(function(p){return era==="all"||p.era===era});
+  l=more?l:l.slice(0,3);$("#people").innerHTML=l.length?l.map(function(p){return '<div class="card">'+av(p.n)+'<div class="grow"><div class="name">'+p.n+'</div><div class="why"><span class="tag">'+p.src+'</span>'+p.why+'</div></div><button class="btn" type="button" data-inv="'+p.n+'">Invite to party</button></div>'}).join(""):'<p class="why">No one from this era yet. Try another era, or start a party.</p>'}
+function renderBoard(){var l=PARTIES.filter(function(p){return era==="all"||p.era===era});
+  l=more?l:l.slice(0,3);$("#board").innerHTML=l.length?l.map(function(p){var mine=p.members.indexOf("You")>-1,full=p.members.length>=p.size;
+    return '<div class="card"><div class="grow"><div class="name">'+p.game+'</div><div class="why">'+p.when+' \u00b7 '+eraName(p.era)+'</div><div class="spots">'+p.members.length+' of '+p.size+' spots filled</div></div><button class="btn red" type="button" data-join="'+p.id+'"'+((full&&!mine)?" disabled":"")+'>'+(mine?"Open room":full?"Full":"Join")+'</button></div>'}).join(""):'<p class="why">No parties in this era. Start one below.</p>'}
+$("#people").addEventListener("click",function(e){var b=e.target.closest("[data-inv]");if(!b)return;
+  var p=PEOPLE.filter(function(x){return x.n===b.dataset.inv})[0];
+  var party={id:Date.now(),game:p.g[0],when:"Tonight 8:00 pm",size:3,era:p.era,members:[p.n,"You"]};PARTIES.unshift(party);renderBoard();openRoom(party)});
+$("#board").addEventListener("click",function(e){var b=e.target.closest("[data-join]");if(!b)return;
+  var p=PARTIES.filter(function(x){return String(x.id)===b.dataset.join})[0];if(p.members.indexOf("You")<0)p.members.push("You");renderBoard();openRoom(p)});
+$("#form").addEventListener("submit",function(e){e.preventDefault();
+  var party={id:Date.now(),game:$("#fg").value,when:$("#fw").value,size:+$("#fs").value,era:$("#fe").value,members:["You"]};PARTIES.unshift(party);renderBoard();openRoom(party)});
+function paint(){var p=cur,full=p.members.length>=p.size;
+  $("#slots").innerHTML=Array.apply(null,Array(p.size)).map(function(_,i){var n=p.members[i];
+    return n?'<div class="slot">'+av(n)+n+'</div>':'<div class="slot"><div class="av empty" aria-hidden="true">+</div>Open</div>'}).join("");
+  $("#st").textContent=full?"Party full. Your voice room is ready.":"Waiting for "+(p.size-p.members.length)+" more\u2026";
+  var dc=$("#dc");dc.setAttribute("aria-disabled",full?"false":"true");if(full)dc.removeAttribute("tabindex");else dc.setAttribute("tabindex","-1");
+  if(full&&!p.paid&&p.members.indexOf("You")>-1){p.paid=true;add(10,"party filled")}
+  renderBoard()}
+function openRoom(p){cur=p;$("#rt").textContent=p.game+" party";$("#rw").textContent=p.when+" \u00b7 "+eraName(p.era);paint();
+  if(!$("#room").open)$("#room").showModal();clearInterval(timer);
+  timer=setInterval(function(){if(p.members.length>=p.size){clearInterval(timer);return}
+    var n=FILL.filter(function(x){return p.members.indexOf(x)<0})[0];if(n)p.members.push(n);paint()},1300)}
+$("#dc").addEventListener("click",function(e){if(this.getAttribute("aria-disabled")==="true")e.preventDefault()});
+$("#close").addEventListener("click",function(){$("#room").close()});
+$("#leave").addEventListener("click",function(){var i=cur.members.indexOf("You");if(i>-1)cur.members.splice(i,1);
+  if(!cur.members.length)PARTIES=PARTIES.filter(function(x){return x!==cur});$("#room").close();renderBoard()});
+$("#room").addEventListener("close",function(){clearInterval(timer)});
+
+/* create + profile */
+var GAMES=["Valorant","League of Legends","CS2","Rocket League","Apex Legends","Call of Duty","Halo","Rainbow Six Siege","Fortnite","Overwatch 2","Minecraft"];
+var ROSTER=["FaZe Rug","Swagg","Snoop Dogg","Ace","Rift","Kno","Zed","Vex"];
+var MOMENTS=["2010: Trickshots start on YouTube","2012: 1 million subscribers","2013: FaZe Rug joins","2019: 19M social followers","2020: Swagg’s offer on stream","2021: Sports Illustrated cover","2022: Snoop Dogg joins","2024: Best Content Organization"];
+var ACC=["#e4002b","#1f6feb","#12a150","#c9a227","#8250df","#0a0a0a"];
+var PAT={stripes:"repeating-linear-gradient(115deg,rgba(255,255,255,.25) 0 10px,transparent 10px 22px),",dots:"radial-gradient(rgba(255,255,255,.4) 2px,transparent 2px) 0 0/14px 14px,",grid:"linear-gradient(rgba(255,255,255,.3) 1px,transparent 1px) 0 0/16px 16px,linear-gradient(90deg,rgba(255,255,255,.3) 1px,transparent 1px) 0 0/16px 16px,",plain:""};
+var roster=[],favPaid=0;
+function opts(a){return a.map(function(x){return '<option value="'+x[0]+'">'+x[1]+'</option>'}).join("")}
+function chipHtml(list,sel,k){return list.map(function(x){return '<button type="button" class="cb" data-k="'+k+'" data-v="'+esc(x)+'" aria-pressed="'+(sel.indexOf(x)>-1)+'">'+esc(x)+'</button>'}).join("")}
+function paintR(){$("#rpool").innerHTML=chipHtml(ROSTER,roster,"r");$("#rl").textContent=roster.length?roster.length+" of 5 picked: "+roster.join(", "):"Pick up to 5 players."}
+function paintP(){
+  $("#pc").innerHTML=ACC.map(function(c){return '<button type="button" class="sw" data-k="acc" data-v="'+c+'" style="background:'+c+'" aria-label="Accent color '+c+'" aria-pressed="'+(me.accent===c)+'"></button>'}).join("");
+  $("#pg").innerHTML=chipHtml(GAMES,me.games,"g");
+  $("#pf").innerHTML=chipHtml(ROSTER,me.fav,"f");
+  $("#pcard").innerHTML='<div class="ban" style="background:'+PAT[me.pat]+me.accent+'"></div><div class="pb">'+av(me.name).replace('class="av"','class="av big"')+'<div class="name" style="font-size:20px">'+esc(me.name)+'</div><div class="why"><span class="tag">'+esc(me.title)+'</span><span class="tag">'+esc(eraName(me.era))+'</span>'+(me.find?'<span class="tag">Open to parties</span>':'')+'</div><p>'+esc(me.bio)+'</p>'
+   +(me.games.length?'<div class="why">Plays: '+me.games.map(esc).join(", ")+'</div>':'')
+   +(me.fav.length?'<div class="why">Favorites: '+me.fav.map(esc).join(", ")+'</div>':'')
+   +(me.rlist?'<div class="why">Dream roster “'+esc(me.rname)+'”: '+me.rlist.map(esc).join(", ")+'</div>':'')
+   +(me.showfp?'<div class="spots" style="margin-top:6px">'+fp+' FaZe Points</div>':'')+'</div>'}
+function paintM(){var c=$("#mf").value,cap=$("#mc").value.trim();
+  $("#mcard").innerHTML='<div class="mc" style="border-color:'+c+'"><div class="why">I was there</div><div class="mt">'+esc($("#mm").value)+'</div><div>'+(cap?esc(cap):"Add your memory above.")+'</div><div class="why" style="margin-top:8px">'+esc(me.name)+' \u00b7 '+esc(me.title)+'</div></div>'}
+document.addEventListener("click",function(e){var b=e.target.closest(".cb,.sw");if(!b)return;var k=b.dataset.k,v=b.dataset.v;
+  if(k==="acc"){me.accent=v;paintP();renderPosts();return}
+  var arr=k==="g"?me.games:k==="f"?me.fav:roster,max=k==="f"?3:k==="r"?5:99,i=arr.indexOf(v);
+  if(i>-1)arr.splice(i,1);else if(arr.length<max)arr.push(v);else toast("You can pick up to "+max);
+  if(k==="f"&&!favPaid&&me.fav.length===3){favPaid=1;add(5,"picked your favorites")}
+  if(k==="r")paintR();else paintP()});
+[["#pn","name","You"],["#pb2","bio",""]].forEach(function(a){$(a[0]).addEventListener("input",function(){me[a[1]]=this.value||a[2];paintP()})});
+[["#pti","title"],["#pe","era"],["#ps","shape"],["#pp","pat"]].forEach(function(a){$(a[0]).addEventListener("change",function(){me[a[1]]=this.value;paintP();renderPosts()})});
+$("#pth").addEventListener("change",function(){var r=document.documentElement;if(this.value==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",this.value)});
+$("#pfind").addEventListener("change",function(){me.find=this.checked;paintP()});
+$("#pfp").addEventListener("change",function(){me.showfp=this.checked;paintP()});
+["#mm","#mf"].forEach(function(x){$(x).addEventListener("change",paintM)});$("#mc").addEventListener("input",paintM);
+$("#rs").addEventListener("click",function(){if(roster.length<5){toast("Pick 5 players first");return}
+  var n=$("#rn").value.trim()||"My dream roster",first=!me.rlist;me.rname=n;me.rlist=roster.slice();
+  POSTS.unshift({n:me.name,t:"My dream roster “"+n+"”: "+roster.join(", ")+".",l:0});renderPosts();
+  if(first)add(5,"saved a dream roster");else{toast("Roster updated and posted");paintP()}});
+$("#mp").addEventListener("click",function(){var cap=$("#mc").value.trim();if(!cap){toast("Add your memory first");return}
+  POSTS.unshift({n:me.name,t:"["+$("#mm").value+"] "+cap,l:0});renderPosts();$("#mc").value="";paintM();
+  if(mk<3){mk++;add(3,"made a moment card")}else toast("Posted to your feed")});
+$("#fe").innerHTML=opts(ERAS.slice(1));$("#fe").value="2020";
+$("#pe").innerHTML=opts(ERAS.slice(1));$("#pe").value=me.era;
+$("#mm").innerHTML=MOMENTS.map(function(m){return '<option>'+esc(m)+'</option>'}).join("");
+$("#pn").value=me.name;$("#pb2").value=me.bio;$("#pti").value=me.title;
+/* arcade */
+var more=false,ch=500,streak=0,DI=["\u2680","\u2681","\u2682","\u2683","\u2684","\u2685"],SU=["\u2660","\u2665","\u2666","\u2663"],RK="23456789TJQKA",HN=["High card","Pair","Two pair","Trips","Straight","Flush","Full house","Quads","Straight flush"],WH=[0,0,0,0,0,0,0,0,0,0,0,0.5,0.5,0.5,1,1,1.5,2,3,8],pk=null;
+function fmt(n){return Math.round(n*10)/10}
+function chg(n){ch=fmt(ch+n);$("#ch").textContent=ch}
+function wg(){var b=+$("#abet").value;if(b>ch){toast("Not enough chips for that bet");return 0}return b}
+$("#more").addEventListener("click",function(){more=!more;this.textContent=more?"Show fewer":"Show all";renderPeople();renderBoard()});
+$("#age").addEventListener("change",function(){$("#arc").hidden=!this.checked});
+$("#refill").addEventListener("click",function(){if(ch>=10){toast("Refill unlocks when you’re under 10 chips");return}chg(500);toast("Demo refill: +500 chips")});
+$("#g-coin").addEventListener("click",function(e){var b=e.target.closest("[data-c]");if(!b)return;var w=wg();if(!w)return;
+  var h=Math.random()<0.5,win=(b.dataset.c==="h")===h;streak=win?streak+1:0;chg(win?w:-w);
+  $("#r-coin").textContent=(h?"Heads. ":"Tails. ")+(win?"You win "+w+"!":"You lose "+w+".")+(streak>1?" Streak: "+streak+"!":"")});
+$("#g-dice").addEventListener("click",function(e){var b=e.target.closest("[data-d]");if(!b)return;var w=wg();if(!w)return;
+  var a=1+Math.floor(Math.random()*6),c=1+Math.floor(Math.random()*6),t=a+c,k=b.dataset.d,win=k==="u"?t<7:k==="s"?t===7:t>7,m=k==="s"?5:2;
+  chg(win?w*(m-1):-w);$("#r-dice").textContent=DI[a-1]+" "+DI[c-1]+" = "+t+". "+(win?"You win "+w*(m-1):"You lose "+w)+"."});
+$("#g-spin").addEventListener("click",function(e){var b=e.target.closest("[data-s]");if(!b)return;var w=wg();if(!w)return;
+  b.disabled=true;var n=0,iv=setInterval(function(){$("#r-spin").textContent=["\u2B50","\uD83D\uDD25","\uD83D\uDCA5","\uD83C\uDFB0"][n++%4]+" Spinning\u2026";
+    if(n>10){clearInterval(iv);var m=WH[Math.floor(Math.random()*20)];chg(w*m-w);
+      $("#r-spin").textContent=m>1?m+"×! You win "+fmt(w*m-w):m===1?"1×. Bet back.":m>0?"0.5×. Half back.":"0×. Nothing this time.";b.disabled=false}},110)});
+
+/* poker: heads-up hold'em vs bot */
+function deck(){var d=[];for(var i=0;i<52;i++)d.push(i);for(var j=51;j>0;j--){var k=Math.floor(Math.random()*(j+1)),t=d[j];d[j]=d[k];d[k]=t}return d}
+function sc5(h){var r=h.map(function(c){return c>>2}).sort(function(a,b){return b-a}),u=r.filter(function(x,i){return r.indexOf(x)===i}),su=h[0]&3,fl=h.every(function(c){return(c&3)===su}),cnt={},st=0;
+  r.forEach(function(x){cnt[x]=(cnt[x]||0)+1});
+  var g=Object.keys(cnt).map(function(k){return[cnt[k],+k]}).sort(function(a,b){return b[0]-a[0]||b[1]-a[1]});
+  if(u.length===5){if(u[0]-u[4]===4)st=u[0]+1;else if(u[0]===12&&u[1]===3)st=4}
+  var k=st?[st-1]:g.map(function(x){return x[1]}),
+  cat=st&&fl?8:g[0][0]===4?7:g[0][0]===3&&g[1][0]===2?6:fl?5:st?4:g[0][0]===3?3:g[0][0]===2&&g[1][0]===2?2:g[0][0]===2?1:0;
+  return cat*1e10+k.reduce(function(a,x,i){return a+x*Math.pow(15,4-i)},0)}
+function best(c){var n=c.length,b=0,h;if(n===5)return sc5(c);
+  if(n===6){for(var a=0;a<6;a++){h=c.filter(function(_,i){return i!==a});b=Math.max(b,sc5(h))}return b}
+  for(var x=0;x<7;x++)for(var y=x+1;y<7;y++){h=c.filter(function(_,i){return i!==x&&i!==y});b=Math.max(b,sc5(h))}return b}
+function card(c,hide){if(hide)return '<span class="pc back">&nbsp;&nbsp;</span>';var r=(c&3)===1||(c&3)===2;return '<span class="pc'+(r?" r":"")+'">'+RK[c>>2]+SU[c&3]+'</span>'}
+function pbet(i,a){a=Math.min(a,pk.stk[i]);pk.stk[i]-=a;pk.bt[i]+=a}
+function mx(){return Math.max(pk.bt[0],pk.bt[1])}
+function tc(i){return Math.min(mx()-pk.bt[i],pk.stk[i])}
+function pkR(){var s=pk;
+  $("#pk").innerHTML='<div class="felt"><div class="why">Bot Ace · '+fmt(s.stk[1])+(s.btn===1?" (dealer)":"")+'</div><div>'+s.hole[1].map(function(c){return card(c,!s.sdwn)}).join("")+'</div><div>'+(s.brd.length?s.brd.map(function(c){return card(c)}).join(""):'<span class="why">Preflop</span>')+'</div><div style="font-weight:700">Pot '+fmt(s.pot+s.bt[0]+s.bt[1])+'</div><div>'+s.hole[0].map(function(c){return card(c)}).join("")+'</div><div class="why">You · '+fmt(s.stk[0])+(s.btn===0?" (dealer)":"")+'</div></div><p class="status" aria-live="polite">'+esc(s.msg)+'</p><div class="row" id="pka"></div>';
+  var A=$("#pka");
+  if(s.done)A.innerHTML=(s.over?"":'<button class="btn red" data-a="next" type="button">Next hand</button>')+'<button class="btn" data-a="leave" type="button">Leave table</button>';
+  else if(s.to===0){var c=tc(0),can=s.rs<4&&s.stk[1]>0&&s.stk[0]>c;
+    A.innerHTML='<button class="btn" data-a="fold" type="button">Fold</button><button class="btn red" data-a="call" type="button">'+(c?"Call "+fmt(c):"Check")+'</button>'+(can?'<button class="btn" data-a="min" type="button">Min raise</button><button class="btn" data-a="half" type="button">Half pot</button><button class="btn" data-a="all" type="button">All in</button>':"")}
+  else A.innerHTML='<span class="why">Bot is thinking…</span>'}
+function pkNew(){var s=pk;
+  if(s.stk[0]<=0){s.msg="You’re out of chips. Leave the table to sit down again.";s.done=true;s.over=true;pkR();return}
+  var pre="";if(s.stk[1]<=0){s.stk[1]=s.buy;pre="Bot rebought. "}
+  var d=deck();s.d=d;s.hole=[[d.pop(),d.pop()],[d.pop(),d.pop()]];s.brd=[];s.pot=0;s.bt=[0,0];s.street=0;s.sdwn=false;s.done=false;s.btn=1-s.btn;s.inc=s.bb;s.rs=0;s.ac=[false,false];
+  pbet(s.btn,s.bb/2);pbet(1-s.btn,s.bb);s.to=s.btn;s.msg=pre+(s.btn===0?"You’re the dealer and small blind.":"Bot is the dealer. You’re the big blind.");
+  pkR();if(s.to===1)setTimeout(pkBot,900)}
+function pkAct(i,t,to){var s=pk,o=1-i,who=i?"Bot ":"You ";
+  if(t==="fold"){var w=s.pot+s.bt[0]+s.bt[1];s.stk[o]+=w;s.pot=0;s.bt=[0,0];s.msg=(i?"Bot folds. You win ":"You fold. Bot wins ")+fmt(w)+".";s.done=true;pkR();return}
+  if(t==="call"){var c=tc(i);pbet(i,c);s.ac[i]=true;s.msg=who+(c?"call "+fmt(c)+".":"check.")}
+  else{var prev=mx();to=Math.min(to,s.bt[i]+s.stk[i]);pbet(i,to-s.bt[i]);s.inc=Math.max(s.inc,s.bt[i]-prev);s.ac[i]=true;s.ac[o]=false;s.rs++;s.msg=who+(s.stk[i]===0?"go all in to ":"raise to ")+fmt(s.bt[i])+"."}
+  if(s.ac[0]&&s.ac[1]&&(s.bt[0]===s.bt[1]||s.stk[0]===0||s.stk[1]===0)){pkStreet();return}
+  s.to=o;pkR();if(o===1)setTimeout(pkBot,900)}
+function pkStreet(){var s=pk;if(!s)return;var e=s.bt[0]-s.bt[1];
+  if(e>0){s.stk[0]+=e;s.bt[0]-=e}else if(e<0){s.stk[1]-=e;s.bt[1]+=e}
+  s.pot+=s.bt[0]+s.bt[1];s.bt=[0,0];s.street++;s.ac=[false,false];s.rs=0;s.inc=s.bb;
+  if(s.street>3){pkShow();return}
+  for(var k=s.street===1?3:1;k>0;k--)s.brd.push(s.d.pop());
+  if(s.stk[0]===0||s.stk[1]===0){s.msg="All in. Dealing it out…";pkR();setTimeout(pkStreet,1100);return}
+  s.to=1-s.btn;pkR();if(s.to===1)setTimeout(pkBot,900)}
+function pkShow(){var s=pk,a=best(s.hole[0].concat(s.brd)),b=best(s.hole[1].concat(s.brd)),na=HN[Math.floor(a/1e10)],nb=HN[Math.floor(b/1e10)];
+  s.sdwn=true;s.done=true;
+  if(a>b){s.stk[0]+=s.pot;s.msg="You win "+fmt(s.pot)+" with "+na+". Bot had "+nb+"."}
+  else if(b>a){s.stk[1]+=s.pot;s.msg="Bot wins "+fmt(s.pot)+" with "+nb+". You had "+na+"."}
+  else{s.stk[0]+=s.pot/2;s.stk[1]+=s.pot/2;s.msg="Split pot. Both have "+na+"."}
+  s.pot=0;pkR()}
+function pstr(){var s=pk,h=s.hole[1];
+  if(!s.brd.length){var a=h[0]>>2,b=h[1]>>2,hi=Math.max(a,b),lo=Math.min(a,b);return a===b?0.5+hi/26:(hi+lo)/32+((h[0]&3)===(h[1]&3)?0.06:0)+(hi-lo<3?0.04:0)}
+  return[0.18,0.5,0.7,0.8,0.86,0.9,0.95,0.99,1][Math.floor(best(h.concat(s.brd))/1e10)]}
+function pkBot(){var s=pk;if(!s||s.done||s.to!==1)return;
+  var c=tc(1),q=pstr(),r=Math.random(),pot=s.pot+s.bt[0]+s.bt[1],can=s.rs<4&&s.stk[0]>0&&s.stk[1]>c,sz=Math.max(s.inc,Math.round(pot)/2);
+  if(c>0){if(can&&q>0.8&&r<0.7)pkAct(1,"raise",mx()+sz);else if(q>0.42||(c<=s.bb&&q>0.28)||r<0.07)pkAct(1,"call");else pkAct(1,"fold")}
+  else{if(can&&((q>0.65&&r<0.7)||r<0.08))pkAct(1,"raise",mx()+Math.max(s.bb,sz));else pkAct(1,"call")}}
+$("#pksit").addEventListener("click",function(){var bb=+$("#pkb").value,buy=bb*50;
+  if(buy>ch){toast("You need "+buy+" chips to sit here. Try 1 / 2 or a demo refill");return}
+  chg(-buy);pk={bb:bb,buy:buy,stk:[buy,buy],btn:1,bt:[0,0],pot:0,brd:[],hole:[[],[]],msg:"",done:true};
+  $("#pk-lobby").hidden=true;$("#pk").hidden=false;pkNew()});
+$("#pk").addEventListener("click",function(e){var b=e.target.closest("[data-a]");if(!b||!pk)return;var a=b.dataset.a,s=pk;
+  if(a==="next"){pkNew();return}
+  if(a==="leave"){chg(s.stk[0]);toast("Left the table with "+fmt(s.stk[0])+" chips");pk=null;$("#pk").hidden=true;$("#pk-lobby").hidden=false;return}
+  if(s.to!==0||s.done)return;
+  if(a==="fold")pkAct(0,"fold");else if(a==="call")pkAct(0,"call");
+  else{var pot=s.pot+s.bt[0]+s.bt[1];pkAct(0,"raise",a==="min"?mx()+s.inc:a==="half"?mx()+Math.max(s.inc,Math.round(pot)/2):1e9)}});
+paintR();paintP();paintM();
+renderQ();renderPosts();renderPerks();renderEras();renderPeople();renderBoard();
+push("Match starts. FaZe on attack.");
+</script>
+</body>
+</html>
